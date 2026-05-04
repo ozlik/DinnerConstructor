@@ -1,4 +1,4 @@
-package ru.practicum.dinner;
+import service.DinnerConstructor;
 
 import java.util.ArrayList;
 import java.util.InputMismatchException;
