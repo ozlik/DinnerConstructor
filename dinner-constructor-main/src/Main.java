@@ -50,7 +50,14 @@ private static void generateDishCombo() {
     System.out.println("Начинаем конструировать обед...");
 
     System.out.println("Введите количество наборов, которые нужно сгенерировать:");
-    int numberOfCombos = scanner.nextInt();
+    int numberOfCombos = 0;
+    try {
+        numberOfCombos = scanner.nextInt();
+    } catch (InputMismatchException e) {
+        System.out.println("Ошибка: введите число!");
+        scanner.next();
+        return;
+    }
     scanner.nextLine();
 
     System.out.println("Вводите типы блюда, разделяя символом переноса строки (enter). " +
@@ -62,7 +69,7 @@ private static void generateDishCombo() {
         if (dc.checkType(nextItem)) {
             selectedTypes.add(nextItem);
         } else {
-            System.out.println("Такой тип блюд мы еще не умеем готовить. Попробуйте что-нибудь другое!");
+            System.out.println("Такой тип блюд: " + nextItem + " мы еще не умеем готовить. Попробуйте что-нибудь другое!");
         }
         nextItem = scanner.nextLine();
     }
