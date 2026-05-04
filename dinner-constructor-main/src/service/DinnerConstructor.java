@@ -1,58 +1,80 @@
 package service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import model.Dish;
+
+import java.util.*;
 
 public class DinnerConstructor {
 
-    HashMap<String, List<String>> dinnersByType;
+    List<Dish> dishes;
     Random random;
 
     public DinnerConstructor() {
-        this.dinnersByType = new HashMap<>();
+        this.dishes = new ArrayList<>();
         this.random = new Random();
     }
 
 
     public void addNewDish(String dishType, String dishName) {
-        List<String> dishesForType = new ArrayList<>();
-        if (dinnersByType.containsKey(dishType)) {
-            dishesForType = dinnersByType.get(dishType);
-        } else {
-            dinnersByType.put(dishType, dishesForType);
+        if (isDishAlreadyAdded(dishType, dishName)) {
+            System.out.println("Такое блюдо уже есть в меню");
+            return;
         }
-        dishesForType.add(dishName);
+        dishes.add(new Dish(dishType, dishName));
     }
 
     public List<List<String>> generateCombos(int comboNumber, List<String> dishTypes) {
-        List<List<String>> combos = new ArrayList<>(); //пустой список для хранения получившихся комбинаций блюд
+        List<List<String>> combos = new ArrayList<>();
         for (int i = 0; i <= comboNumber; i++) {
-            List<String> combo = generateCombo(dishTypes); //одна комбинация блюд генерируется в отдельном методе
-            combos.add(combo);
+            combos.add(generateCombo(dishTypes));
         }
         return combos;
     }
 
     public boolean checkType(String type) {
-        return dinnersByType.containsKey(type);
+        return getAllTypes().contains(type);
     }
 
     private List<String> generateCombo(List<String> dishTypes) {
         List<String> selectedDishes = new ArrayList<>(dishTypes.size());
         for (String dishType : dishTypes) {
-            List<String> availableDishes = dinnersByType.get(dishType);
-            String selectedDish = getRandomDish(availableDishes);
+            String selectedDish = getRandomDish(getDishesByType(dishType));
             selectedDishes.add(selectedDish);
         }
         return selectedDishes;
     }
 
     private String getRandomDish(List<String> availableDishes) {
-        int numberOfDishesForType = availableDishes.size();
-        int dishIndex = random.nextInt(numberOfDishesForType);
+        int dishIndex = random.nextInt(availableDishes.size());
         return availableDishes.get(dishIndex);
+    }
+
+    private boolean isDishAlreadyAdded(String type, String name) {
+        for (Dish dish : dishes) {
+            if (dish.getType().equalsIgnoreCase(type) &&
+                    dish.getName().equalsIgnoreCase(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Set<String> getAllTypes() {
+        Set<String> dishesTypes = new HashSet<>();
+        for (Dish dish : dishes) {
+            dishesTypes.add(dish.getType());
+        }
+        return dishesTypes;
+    }
+
+    private List<String> getDishesByType(String type) {
+        List<String> dishesByType = new ArrayList<>();
+        for(Dish dish: dishes) {
+        if(dish.getType().equals(type)) {
+            dishesByType.add(dish.getName());
+        }
+        }
+        return dishesByType;
     }
 
 }
